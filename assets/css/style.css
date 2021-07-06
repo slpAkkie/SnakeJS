@@ -1,0 +1,27 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+
+  margin: 0;
+  padding: 0;
+
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+html {
+  font-size: 10px;
+}
+
+#js-canvas {
+  display: block;
+
+  width: 800px;
+  height: 800px;
+  margin: 2rem auto;
+
+  box-shadow: 0 0 5rem rgba(0, 0, 0, .05);
+  border-radius: .4rem;
+}
