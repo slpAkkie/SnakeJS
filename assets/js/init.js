@@ -78,15 +78,19 @@ let data = {
 
 const buttonCodes = {
   'a': 'left',
+  'ф': 'left',
   'ArrowLeft': 'left',
 
   'w': 'up',
+  'ц': 'up',
   'ArrowUp': 'up',
 
   'd': 'right',
+  'в': 'right',
   'ArrowRight': 'right',
 
   's': 'down',
+  'ы': 'down',
   'ArrowDown': 'down',
 };
 
