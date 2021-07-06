@@ -2,15 +2,22 @@
 
 
 
+let timeoutID = null;
+
+
+
 /**
  * Update frame
  *
  * @returns {void}
  */
 function update() {
-  // Code here...
+  appContext.clearRect( 0, 0, appCanvas.width, appCanvas.height )
 
-  requestAnimationFrame( update );
+  gameObjects.forEach( gObj => gObj.update( data ) );
+  gameObjects.forEach( gObj => gObj.render( appContext ) );
+
+  timeoutID = setTimeout( update, config.speed || defaults.speed );
 }
 
-requestAnimationFrame( update );
+timeoutID = setTimeout( update, config.speed || defaults.speed );
