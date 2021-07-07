@@ -22,7 +22,6 @@ function timeFormat( ms ) {
 
   minutes = minutes.toString()
   seconds = seconds.toString()
-  ms = ms.toString()
 
   if ( minutes.length < 2 ) minutes = `0${minutes}`
   else minutes = `${minutes}`
@@ -30,11 +29,7 @@ function timeFormat( ms ) {
   if ( seconds.length < 2 ) seconds = `0${seconds}`
   else seconds = `${seconds}`
 
-  if ( ms.length < 2 ) ms = `00${ms}`
-  else if ( ms.length < 3 ) ms = `0${ms}`
-  else ms = `${ms}`
-
-  return `${minutes}:${seconds}:${ms}`
+  return `${minutes}:${seconds}`
 }
 
 /**
@@ -63,7 +58,7 @@ function keydownHandler( evt ) {
  * @returns {Number}
  */
 function calculateScore( eaten, speed ) {
-  return Math.floor( ( eaten / speed * 150 ) * 1000 ) / 1000 // TODO: Change formulae to calculate score
+  return Math.floor( gameData.acceleration * player.eaten )
 }
 
 /**
