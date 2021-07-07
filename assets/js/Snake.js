@@ -27,6 +27,22 @@ class Snake {
    */
   #headColor;
 
+  /**
+   * @var {Number}
+   */
+  #startWithLength = 3;
+
+  /**
+   * @var {Number}
+   */
+  #startLength = 0;
+
+
+
+  get length() { return this.#body.length }
+
+  get lastBodyIndex() { return this.length - 1 }
+
 
 
   /**
@@ -34,16 +50,19 @@ class Snake {
    *
    * @param {Object} param0
    */
-  constructor( { snake, gridSize }, defaults ) {
+  constructor( { snake, grid }, defaults ) {
     this.#bodyColor = snake?.bodyColor || defaults.snake.bodyColor;
     this.#headColor = snake?.headColor || defaults.snake.headColor;
 
-    this.#bodySize = gridSize || defaults.gridSize;
+    this.#bodySize = grid?.size || defaults.grid.size;
 
     this.#body.push( {
-      x: getFieldSize().width / 2,
-      y: getFieldSize().height / 2,
+      x: fieldSize.width / 2,
+      y: fieldSize.height / 2,
     } );
+  }
+
+  firstGrowth() {
   }
 
   /**
@@ -54,22 +73,27 @@ class Snake {
    * @returns {void}
    */
   update( data ) {
+    // Calculate coords for new body part
     let newHeadCoords = {
       x: this.#body[ 0 ].x + this.#getXDirection( data.direction ) * this.#bodySize,
       y: this.#body[ 0 ].y + this.#getYDirection( data.direction ) * this.#bodySize,
     };
 
+    // Check if it will be go out of the game field
     if ( newHeadCoords.x < 0 )
-      newHeadCoords.x = getFieldSize().width - this.#bodySize;
-    if ( newHeadCoords.x + this.#bodySize > getFieldSize().width )
-      newHeadCoords.x = this.#bodySize;
+      newHeadCoords.x = fieldSize.width - this.#bodySize;
+    if ( newHeadCoords.x + this.#bodySize > fieldSize.width )
+      newHeadCoords.x = 0;
     if ( newHeadCoords.y < 0 )
-      newHeadCoords.y = getFieldSize().height - this.#bodySize;
-    if ( newHeadCoords.y + this.#bodySize > getFieldSize().height )
-      newHeadCoords.y = this.#bodySize;
+      newHeadCoords.y = fieldSize.height - this.#bodySize;
+    if ( newHeadCoords.y + this.#bodySize > fieldSize.height )
+      newHeadCoords.y = 0;
 
+    // Add new part to the front and pop the last one
     this.#body.unshift( newHeadCoords );
-    this.#body.pop();
+
+    if ( this.#startLength < this.#startWithLength ) this.#startLength++;
+    else this.#body.pop();
   }
 
   /**
@@ -106,19 +130,19 @@ class Snake {
    * @returns {void}
    */
   render( canvasContext ) {
+    for ( let i = this.lastBodyIndex; i >= 0; i-- ) {
+      canvasContext.fillStyle = this.#bodyColor;
+      if ( i === 0 ) canvasContext.fillStyle = this.#headColor;
 
-    canvasContext.fillStyle = this.#headColor;
+      let bodyPart = this.#body[ i ];
 
-    this.#body.forEach( bodyPart => {
       canvasContext.fillRect(
         bodyPart.x,
         bodyPart.y,
         this.#bodySize,
         this.#bodySize,
       );
-
-      canvasContext.fillStyle = this.#bodyColor;
-    } );
+    }
 
   }
 
