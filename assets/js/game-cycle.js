@@ -2,7 +2,20 @@
 
 
 
-let timeoutID = null;
+/**
+ * Check new direction and update if it's possible
+ */
+function updateDirection() {
+  if (
+    data.nextFrameDirection === 'left' && data.direction !== 'right' ||
+    data.nextFrameDirection === 'right' && data.direction !== 'left' ||
+    data.nextFrameDirection === 'up' && data.direction !== 'down' ||
+    data.nextFrameDirection === 'down' && data.direction !== 'up'
+  ) {
+    data.direction = data.nextFrameDirection;
+    data.nextFrameDirection = null;
+  }
+}
 
 
 
@@ -12,10 +25,11 @@ let timeoutID = null;
  * @returns {void}
  */
 function update() {
+  updateDirection();
+
   appContext.clearRect( 0, 0, appCanvas.width, appCanvas.height )
 
-  gameObjects.forEach( gObj => gObj.update( data ) );
-  gameObjects.forEach( gObj => gObj.render( appContext ) );
+  Player.update( data ).render( appContext );
 
   timeoutID = setTimeout( update, data.speed );
 }

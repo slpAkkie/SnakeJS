@@ -94,6 +94,8 @@ class Snake {
 
     if ( this.#startLength < this.#startWithLength ) this.#startLength++;
     else this.#body.pop();
+
+    return this;
   }
 
   /**

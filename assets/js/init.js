@@ -81,30 +81,23 @@ appCanvas.height = fieldSize.height;
 
 
 // Set game objects
-let gameObjects = [ new Snake( config, defaults ) ];
+let Player = new Snake( config, defaults );
 
 
 
 // In game data
 let data = {
+  nextFrameDirection: null,
   direction: null,
   speed: config?.speed || defaults.speed,
 };
+
+// Game timeout
+let timeoutID = null;
 
 
 
 /** ==================================================
  * Set Event handlers */
 
-document.addEventListener( 'keydown', ( evt ) => {
-  let direction = buttonCodes[ evt.key ];
-
-  if (
-    direction === 'left' && data.direction === 'right' ||
-    direction === 'right' && data.direction === 'left' ||
-    direction === 'up' && data.direction === 'down' ||
-    direction === 'down' && data.direction === 'up'
-  ) return;
-
-  if ( direction ) data.direction = direction;
-} );
+document.addEventListener( 'keydown', evt => data.nextFrameDirection = buttonCodes[ evt.key ] || null );
