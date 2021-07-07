@@ -13,8 +13,9 @@
   <!-- JS -->
   <script defer src="./assets/js/Snake.js"></script>
   <script defer src="./assets/js/Food.js"></script>
-  <script defer src="./assets/js/init.js"></script>
   <script defer src="./assets/js/game-cycle.js"></script>
+  <script defer src="./assets/js/init.js"></script>
+  <script defer src="./assets/js/themes.js"></script>
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="./assets/img/favicon.png" type="image/png">
@@ -26,7 +27,79 @@
 <body>
 
   <!-- Game area -->
-  <canvas id="js-canvas"></canvas>
+  <div class="game-area">
+    <canvas id="js-canvas"></canvas>
+
+    <!-- Game UI -->
+    <div class="game-ui game-ui_left">
+      <div class="game-ui__panel">
+        <h3 class="game-ui__title">Съедено</h3>
+        <div class="game-ui__value" data-name="eaten">0</div>
+      </div>
+      <div class="game-ui__panel">
+        <h3 class="game-ui__title">Счет</h3>
+        <div class="game-ui__value" data-name="score">0</div>
+      </div>
+      <div class="game-ui__panel">
+        <h3 class="game-ui__title">Время</h3>
+        <div class="game-ui__value" data-name="duration">0</div>
+      </div>
+      <div class="game-ui__panel">
+        <h3 class="game-ui__title">Скорость</h3>
+        <div class="game-ui__value" data-name="speed">0</div>
+      </div>
+    </div><!-- !Game UI -->
+
+    <!-- Game UI -->
+    <div class="game-ui game-ui_right">
+      <div class="game-ui__panel">
+        <h3 class="game-ui__title">Цвет змейки</h3>
+        <div class="game-ui__options">
+
+          <!-- Gray -->
+          <div class="game-ui__control game-ui__color-picker" data-value="gray">
+            <div class="game-ui__colors">
+              <div class="game-ui__color game-ui__color_gray-primary"></div>
+              <div class="game-ui__color game-ui__color_gray-secondary"></div>
+              <div class="game-ui__color game-ui__color_gray-food"></div>
+            </div>
+          </div>
+
+          <!-- Blue -->
+          <div class="game-ui__control game-ui__color-picker" data-value="blue">
+            <div class="game-ui__colors">
+              <div class="game-ui__color game-ui__color_blue-primary"></div>
+              <div class="game-ui__color game-ui__color_blue-secondary"></div>
+              <div class="game-ui__color game-ui__color_blue-food"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- !Game UI -->
+
+    <!-- Gameover Popup -->
+    <div class="popup" id="js-gameover">
+      <div class="popup__inner">
+        <div class="popup__header">
+          <h2 class="popup__title">Игра закончена, Вы проиграли!</h2>
+        </div>
+
+        <div class="popup__body">
+          <div class="row"><span class="mr-4 text-bold">Ваш счет:</span> <span id="js-score"></span></div>
+          <div class="row"><span class="mr-4 text-bold">Съедено:</span> </span> <span id="js-eaten"></span></div>
+          <div class="row"><span class="mr-4 text-bold">Время игры:</span> </span> <span id="js-duration"></span></div>
+        </div>
+
+        <div class="popup__footer">
+          <div class="row row_end">
+            <input class="button" id="js-again" type="button" value="Начать заново">
+          </div>
+        </div>
+      </div>
+    </div> <!-- !Gameover Popup -->
+
+  </div>
 
 </body>
 
