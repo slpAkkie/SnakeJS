@@ -156,9 +156,12 @@ class Snake {
    * @returns {void}
    */
   eat( food ) {
-    this.#body.push( this.#newTailPart )
     this.eaten++
+    this.#body.push( this.#newTailPart )
+
     food.calculateNewCoords()
+
+    gameData.increaseAcceleration()
   }
 
   /**

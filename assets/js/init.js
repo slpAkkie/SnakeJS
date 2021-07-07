@@ -79,9 +79,14 @@ let gameData = {
   speed: DEFAULTS.SPEED,
   speedAcceleration: DEFAULTS.SPEED_ACCELERATION,
   acceleration: DEFAULTS.ACCELERATION,
+  maxAcceleration: DEFAULTS.MAX_ACCELERATION,
+  increaseAcceleration: () => {
+    gameData.acceleration += gameData.speedAcceleration
+    gameData.acceleration = gameData.acceleration > gameData.maxAcceleration ? gameData.maxAcceleration : gameData.acceleration
+  },
   getAcceleratedSpeed: () => gameData.speed - gameData.acceleration,
   getSpeedRatio: () => {
-    let speed = ( Math.round( gameData.speed / gameData.getAcceleratedSpeed() * 100 ) / 100 ).toString(),
+    let speed = ( Math.round( gameData.speed / gameData.getAcceleratedSpeed() * 1000 ) / 1000 ).toString(),
       decimalCount = speed.split( '.' )[ 1 ]?.length
 
     if ( !decimalCount ) speed = `${speed}.000`
