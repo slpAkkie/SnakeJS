@@ -1,0 +1,65 @@
+.game-ui {
+    position: absolute;
+    top     : 5rem;
+
+    width: 15rem;
+}
+
+.game-ui_left {
+    left: 2.5rem;
+}
+
+.game-ui_right {
+    right: 2.5rem;
+}
+
+.game-ui__panel {
+    margin-bottom: 5rem;
+}
+
+.game-ui__title {
+    margin-bottom: .5rem;
+}
+
+.game-ui__control {
+    margin-bottom: .5rem;
+}
+
+.game-ui__color {
+    width : 30%;
+    height: 2rem;
+}
+
+.game-ui__colors {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+
+    padding: 1rem;
+
+    cursor: pointer;
+}
+
+.game-ui__color_gray-primary {
+    background-color: #555555;
+}
+
+.game-ui__color_gray-secondary {
+    background-color: #222222;
+}
+
+.game-ui__color_gray-food {
+    background-color: #ae4060;
+}
+
+.game-ui__color_blue-primary {
+    background-color: #223382;
+}
+
+.game-ui__color_blue-secondary {
+    background-color: #5566f5;
+}
+
+.game-ui__color_blue-food {
+    background-color: #195bff;
+}

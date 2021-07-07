@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+
+  margin : 0;
+  padding: 0;
+
+  outline   : none;
+  box-shadow: none;
+  border    : none;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-size  : 1.6rem;
+}
