@@ -2,4 +2,6 @@
 
 
 
-let config = {}
+let config = {
+  skin: 'black-gold'
+}
