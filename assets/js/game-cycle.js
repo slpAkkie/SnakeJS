@@ -17,7 +17,7 @@ function update() {
   gameObjects.forEach( gObj => gObj.update( data ) );
   gameObjects.forEach( gObj => gObj.render( appContext ) );
 
-  timeoutID = setTimeout( update, config.speed || defaults.speed );
+  timeoutID = setTimeout( update, data.speed );
 }
 
-timeoutID = setTimeout( update, config.speed || defaults.speed );
+timeoutID = setTimeout( update, data.speed );

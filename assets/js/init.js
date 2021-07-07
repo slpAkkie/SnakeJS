@@ -5,8 +5,6 @@
 /** ==================================================
  * Configuration */
 
-
-
 /**
  * Game configuration (edit if you want customize game)
  *
@@ -23,17 +21,17 @@ const config = {};
  */
 const defaults = {
 
-  gridSize: 20,
   speed: 200,
+
+  grid: {
+    size: 20,
+    width: 40,
+    height: 40,
+  },
 
   snake: {
     bodyColor: '#555555',
     headColor: '#222222',
-  },
-
-  canvas: {
-    width: 800,
-    height: 800,
   },
 
 };
@@ -41,41 +39,9 @@ const defaults = {
 
 
 /** ==================================================
- * Initialize game data */
+ * Define constants */
 
-
-
-// Canvas
-const appCanvas = document.querySelector( '#js-canvas' );
-const appContext = appCanvas.getContext( '2d' );
-
-appCanvas.width = config.canvas?.width || defaults.canvas.width;
-appCanvas.height = config.canvas?.height || defaults.canvas.height;
-
-function getFieldSize() {
-  return {
-    width: appCanvas.width,
-    height: appCanvas.height,
-  };
-}
-
-
-
-// Create Snake object
-const player = new Snake( config, defaults );
-
-// Set game objects
-let gameObjects = [
-  player
-];
-
-
-
-// In game data
-let data = {
-  direction: null,
-};
-
+// Keys
 const buttonCodes = {
   'a': 'left',
   'ф': 'left',
@@ -92,6 +58,37 @@ const buttonCodes = {
   's': 'down',
   'ы': 'down',
   'ArrowDown': 'down',
+};
+
+// Canvas
+const appCanvas = document.querySelector( '#js-canvas' );
+const appContext = appCanvas.getContext( '2d' );
+
+// Size of game field
+const fieldSize = {
+  width: ( config?.grid?.size || defaults.grid.size ) * ( config?.grid?.width || defaults.grid.width ),
+  height: ( config?.grid?.size || defaults.grid.size ) * ( config?.grid?.height || defaults.grid.height ),
+}
+
+
+
+/** ==================================================
+ * Initialize game data */
+
+appCanvas.width = fieldSize.width;
+appCanvas.height = fieldSize.height;
+
+
+
+// Set game objects
+let gameObjects = [ new Snake( config, defaults ) ];
+
+
+
+// In game data
+let data = {
+  direction: null,
+  speed: config?.speed || defaults.speed,
 };
 
 
