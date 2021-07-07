@@ -1,101 +1,127 @@
-'use strict';
+'use strict'
 
 
 
 class Food {
 
-    /**
-     * @var {Object}
-     */
-    #coords = {
-        x: null,
-        y: null,
-    };
+  /**
+   * Object coords
+   *
+   * @var {Object}
+   */
+  #coords = {
+    x: null,
+    y: null,
+  }
 
-    get coords() {
-        return this.#coords;
-    };
+  /**
+   * @var {Object}
+   */
+  getCoords() {
+    return this.#coords
+  }
 
-    /**
-     * @var {Number}
-     */
-    #size;
+  /**
+   * Object size
+   *
+   * @var {Number}
+   */
+  #size
 
-    /**
-     * @var {String}
-     */
-    #color;
+  /**
+   * Object color
+   *
+   * @var {String}
+   */
+  #color
 
-    /**
-     * Create a Food object
-     *
-     * @param {Object} param0
-     */
-    constructor( food, defaults ) {
-        this.#size = cellSize;
-        this.#color = food?.color || defaults.color;
+  /**
+   * Create a Food object
+   *
+   * @param {Object} food
+   */
+  constructor( skin ) {
+    this.#size = GRID.SIZE
+    this.setSkin( skin )
 
-        this.calculateNewCoords();
-    }
+    this.resetState()
+  }
 
-    /**
-     * Change the food's skin
-     *
-     * @param {Object} skin
-     *
-     * @returns {void}
-     */
-    changeSkin( skin ) {
-        this.#color = skin?.color || defaults.color;
-    }
+  /**
+   * Change skin
+   *
+   * @param {Object} skin
+   * @returns {void}
+   */
+  setSkin( { food } ) {
+    this.#color = food.color
+  }
 
-    /**
-     * Calculate new coords to respawn new food
-     *
-     * @returns {void}
-     */
-    calculateNewCoords() {
-        do {
-            this.#coords.x = Math.round( Math.random() * ( gridSize.cols - 1 ) ) * cellSize;
-            this.#coords.y = Math.round( Math.random() * ( gridSize.rows - 1 ) ) * cellSize;
-        } while ( this.checkCollisionWithPlayer() );
-    }
+  /**
+   * Reset food to the initial state
+   *
+   * @returns {void}
+   */
+  resetState() {
+    this.calculateNewCoords()
+  }
 
-    /**
-     * Check if spawn in player body
-     *
-     * @returns {Boolean}
-     */
-    checkCollisionWithPlayer() {
-        return player.checkCollisionWith( this );
-    }
+  /**
+   * Calculate new coords
+   *
+   * @returns {void}
+   */
+  calculateNewCoords() {
+    do {
+      this.#coords.x = getRandomXCoord()
+      this.#coords.y = getRandomYCoord()
+    } while ( checkCollision( this ) instanceof Snake )
+  }
 
-    /**
-     * Update food state
-     *
-     * @param {Array} data In game data
-     *
-     * @returns {void}
-     */
-    update( data ) {
-        return this;
-    }
+  /**
+   * Check if coords has collision with provided coords
+   *
+   * @param {Object} coords
+   * @returns {Boolean}
+   */
+  checkCollisionWithCoords( coords ) {
+    return coords.x === this.getCoords().x && coords.y === this.getCoords().y
+  }
 
-    /**
-     * Render food into canvas
-     *
-     * @param {CanvasRenderingContext2D} canvasContext
-     *
-     * @returns {void}
-     */
-    render( canvasContext ) {
-        canvasContext.fillStyle = this.#color;
-        canvasContext.fillRect(
-            this.#coords.x,
-            this.#coords.y,
-            this.#size,
-            this.#size
-        );
-    }
+  /**
+   * Check if it's object has collision with provided gameObject
+   *
+   * @param {Object} gameObject
+   * @returns {Boolean}
+   */
+  checkCollisionWith( gameObject ) {
+    return gameObject.checkCollisionWithCoords( this.getCoords() )
+  }
+
+  /**
+   * Update food state
+   *
+   * @param {Array} data In game data
+   *
+   * @returns {void}
+   */
+  update( data ) { return this }
+
+  /**
+   * Render food into canvas
+   *
+   * @param {CanvasRenderingContext2D} canvasContext
+   *
+   * @returns {void}
+   */
+  render( canvasContext ) {
+    canvasContext.fillStyle = this.#color
+    canvasContext.fillRect(
+      this.#coords.x,
+      this.#coords.y,
+      this.#size,
+      this.#size
+    )
+  }
 
 }

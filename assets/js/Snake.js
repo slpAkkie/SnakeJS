@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 
 
@@ -10,37 +10,42 @@ class Snake {
    *
    * @var {Array}
    */
-  #body = [];
+  #body
+
+  /**
+   * @var {Object}
+   */
+  #newTailPart
 
   /**
    * @var {Number}
    */
-  #bodySize;
+  #bodySize
 
   /**
    * @var {String}
    */
-  #bodyColor;
+  #bodyColor
 
   /**
    * @var {String}
    */
-  #headColor;
+  #headColor
 
   /**
    * @var {Number}
    */
-  #startWithLength = 3;
+  #startWithLength = 3
 
   /**
    * @var {Number}
    */
-  #startLength = 0;
+  #startLength = 0
 
   /**
    * How much snake ate
    */
-  eaten = 0;
+  eaten = 0
 
 
 
@@ -61,16 +66,12 @@ class Snake {
    *
    * @param {Object} param0
    */
-  constructor( snake, defaults ) {
-    this.#bodyColor = snake?.bodyColor || defaults.bodyColor;
-    this.#headColor = snake?.headColor || defaults.headColor;
+  constructor( skin ) {
+    this.setSkin( skin )
 
-    this.#bodySize = cellSize;
+    this.#bodySize = GRID.SIZE
 
-    this.#body.push( {
-      x: fieldSize.width / 2,
-      y: fieldSize.height / 2,
-    } );
+    this.resetState()
   }
 
   /**
@@ -80,32 +81,47 @@ class Snake {
    *
    * @returns {void}
    */
-  changeSkin( skin ) {
-    this.#bodyColor = skin?.bodyColor || defaults.bodyColor;
-    this.#headColor = skin?.headColor || defaults.headColor;
+  setSkin( { snake } ) {
+    this.#headColor = snake.headColor
+    this.#bodyColor = snake.bodyColor
   }
 
   /**
-   * Check if coords into snake's body
+   * Check if coords has collision with provided coords
    *
-   * @param {Object} coords1
-   * @param {Object} coords2
+   * @param {Object} coords
    *
    * @returns {Boolean}
    */
-  checkCollisionWithCoords( coords1, coords2 ) {
-    return coords1.x === coords2.x && coords1.y === coords2.y;
+  checkCollisionWithCoords( coords ) {
+    return this.#body.some( bodyPart => bodyPart.x === coords.x && bodyPart.y === coords.y )
   }
 
   /**
-   * Check if coords is in snake body
+   * Check if head coords has collision with provided coords
+   *
+   * @param {Object} coords
+   *
+   * @returns {Boolean}
+   */
+  checkCollisionHeadWithCoords( coords ) {
+    return this.#body[ 0 ].x === coords.x && this.#body[ 0 ].y === coords.y
+  }
+
+  /**
+   * Check if it's object has collision with provided gameObject
    *
    * @param {Object} gameObject
    *
    * @returns {Boolean}
    */
   checkCollisionWith( gameObject ) {
-    return this.#body.some( bodyPart => this.checkCollisionWithCoords( bodyPart, gameObject.coords ) );
+    let collision = false
+
+    if ( gameObject instanceof Snake ) collision = this.checkAteYourself()
+    else collision = this.checkCollisionWithCoords( gameObject.getCoords() )
+
+    return collision
   }
 
   /**
@@ -115,9 +131,9 @@ class Snake {
    */
   checkAteYourself() {
     for ( let i = 4; i < this.length; i++ )
-      if ( this.checkCollisionWithCoords( this.#body[ 0 ], this.#body[ i ] ) ) return true;
+      if ( this.checkCollisionHeadWithCoords( this.#body[ i ] ) ) return true
 
-    return false;
+    return false
   }
 
   /**
@@ -126,14 +142,12 @@ class Snake {
    * @returns {void}
    */
   resetState() {
-    this.#body = [ {
-      x: fieldSize.width / 2,
-      y: fieldSize.height / 2,
-    } ];
+    this.#body = [ getCenterCoords() ]
+    this.#newTailPart = getCenterCoords()
 
-    this.#startLength = 0;
+    this.#startLength = 0
 
-    this.eaten = 0;
+    this.eaten = 0
   }
 
   /**
@@ -141,10 +155,10 @@ class Snake {
    *
    * @returns {void}
    */
-  eat() {
-    this.#body.push( this.#body[ this.lastBodyIndex ] );
-    this.eaten++;
-    food.calculateNewCoords();
+  eat( food ) {
+    this.#body.push( this.#newTailPart )
+    this.eaten++
+    food.calculateNewCoords()
   }
 
   /**
@@ -154,33 +168,27 @@ class Snake {
    *
    * @returns {void}
    */
-  update( data ) {
-    // Calculate coords for new body part
+  update( gameData ) {
     let newHeadCoords = {
-      x: this.#body[ 0 ].x + this.#getXDirection( data.direction ) * this.#bodySize,
-      y: this.#body[ 0 ].y + this.#getYDirection( data.direction ) * this.#bodySize,
-    };
+      x: this.#body[ 0 ].x + this.#getXDirectionRatio( gameData.direction ) * this.#bodySize,
+      y: this.#body[ 0 ].y + this.#getYDirectionRatio( gameData.direction ) * this.#bodySize,
+    }
 
-    // Check if it will be go out of the game field
-    if ( newHeadCoords.x < 0 )
-      newHeadCoords.x = fieldSize.width - this.#bodySize;
-    if ( newHeadCoords.x + this.#bodySize > fieldSize.width )
-      newHeadCoords.x = 0;
-    if ( newHeadCoords.y < 0 )
-      newHeadCoords.y = fieldSize.height - this.#bodySize;
-    if ( newHeadCoords.y + this.#bodySize > fieldSize.height )
-      newHeadCoords.y = 0;
+    if ( newHeadCoords.x < 0 ) newHeadCoords.x = CANVAS_SIZE.WIDTH - this.#bodySize
+    if ( newHeadCoords.x + this.#bodySize > CANVAS_SIZE.WIDTH ) newHeadCoords.x = 0
+    if ( newHeadCoords.y < 0 ) newHeadCoords.y = CANVAS_SIZE.HEIGHT - this.#bodySize
+    if ( newHeadCoords.y + this.#bodySize > CANVAS_SIZE.HEIGHT ) newHeadCoords.y = 0
 
-    // Add new part to the front and pop the last one
-    this.#body.unshift( newHeadCoords );
-    if ( this.checkCollisionWith( food ) ) this.eat();
+    this.#body.unshift( newHeadCoords )
 
-    if ( this.#startLength < this.#startWithLength ) this.#startLength++;
-    else this.#body.pop();
+    if ( this.#startLength < this.#startWithLength ) this.#startLength++
+    else this.#newTailPart = this.#body.pop()
 
-    if ( this.checkAteYourself() ) data.gameOver = true;
+    let collisionWith = checkCollision( this )
+    if ( collisionWith instanceof Food ) this.eat( collisionWith )
+    else if ( collisionWith instanceof Snake ) gameover()
 
-    return this;
+    return this
   }
 
   /**
@@ -189,11 +197,11 @@ class Snake {
    * @param {String} direction
    * @returns {Number}
    */
-  #getXDirection( direction ) {
-    if ( direction === 'left' ) return -1;
-    else if ( direction === 'right' ) return 1;
+  #getXDirectionRatio( direction ) {
+    if ( direction === 'left' ) return -1
+    else if ( direction === 'right' ) return 1
 
-    return 0;
+    return 0
   }
 
   /**
@@ -202,11 +210,11 @@ class Snake {
    * @param {String} direction
    * @returns {Number}
    */
-  #getYDirection( direction ) {
-    if ( direction === 'up' ) return -1;
-    else if ( direction === 'down' ) return 1;
+  #getYDirectionRatio( direction ) {
+    if ( direction === 'up' ) return -1
+    else if ( direction === 'down' ) return 1
 
-    return 0;
+    return 0
   }
 
   /**
@@ -218,17 +226,17 @@ class Snake {
    */
   render( canvasContext ) {
     for ( let i = this.lastBodyIndex; i >= 0; i-- ) {
-      canvasContext.fillStyle = this.#bodyColor;
-      if ( i === 0 ) canvasContext.fillStyle = this.#headColor;
+      canvasContext.fillStyle = this.#bodyColor
+      if ( i === 0 ) canvasContext.fillStyle = this.#headColor
 
-      let bodyPart = this.#body[ i ];
+      let bodyPart = this.#body[ i ]
 
       canvasContext.fillRect(
         bodyPart.x,
         bodyPart.y,
         this.#bodySize,
         this.#bodySize,
-      );
+      )
     }
 
   }

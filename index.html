@@ -11,11 +11,14 @@
   <link rel="stylesheet" href="./assets/css/style.css">
 
   <!-- JS -->
+  <script defer src="./assets/js/skins.js"></script>
   <script defer src="./assets/js/Snake.js"></script>
   <script defer src="./assets/js/Food.js"></script>
+  <script defer src="./assets/js/config.js"></script>
+  <script defer src="./assets/js/defaults.js"></script>
+  <script defer src="./assets/js/functions.js"></script>
   <script defer src="./assets/js/game-cycle.js"></script>
   <script defer src="./assets/js/init.js"></script>
-  <script defer src="./assets/js/themes.js"></script>
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="./assets/img/favicon.png" type="image/png">
@@ -31,7 +34,7 @@
     <canvas id="js-canvas"></canvas>
 
     <!-- Game UI -->
-    <div class="game-ui game-ui_left">
+    <div class="game-ui game-ui_info">
       <div class="game-ui__panel">
         <h3 class="game-ui__title">Съедено</h3>
         <div class="game-ui__value" data-name="eaten">0</div>
@@ -42,41 +45,21 @@
       </div>
       <div class="game-ui__panel">
         <h3 class="game-ui__title">Время</h3>
-        <div class="game-ui__value" data-name="duration">0</div>
+        <div class="game-ui__value" data-name="duration">00:00:000</div>
       </div>
       <div class="game-ui__panel">
         <h3 class="game-ui__title">Скорость</h3>
-        <div class="game-ui__value" data-name="speed">0</div>
+        <div class="game-ui__value" data-name="speed">0.000</div>
       </div>
     </div><!-- !Game UI -->
 
-    <!-- Game UI -->
-    <div class="game-ui game-ui_right">
+    <!-- Settings UI -->
+    <div class="game-ui game-ui_settings">
       <div class="game-ui__panel">
-        <h3 class="game-ui__title">Цвет змейки</h3>
-        <div class="game-ui__options">
-
-          <!-- Gray -->
-          <div class="game-ui__control game-ui__color-picker" data-value="gray">
-            <div class="game-ui__colors">
-              <div class="game-ui__color game-ui__color_gray-primary"></div>
-              <div class="game-ui__color game-ui__color_gray-secondary"></div>
-              <div class="game-ui__color game-ui__color_gray-food"></div>
-            </div>
-          </div>
-
-          <!-- Blue -->
-          <div class="game-ui__control game-ui__color-picker" data-value="blue">
-            <div class="game-ui__colors">
-              <div class="game-ui__color game-ui__color_blue-primary"></div>
-              <div class="game-ui__color game-ui__color_blue-secondary"></div>
-              <div class="game-ui__color game-ui__color_blue-food"></div>
-            </div>
-          </div>
-
-        </div>
+        <h3 class="game-ui__title">Цветовые схемы</h3>
+        <div class="game-ui__options"></div>
       </div>
-    </div><!-- !Game UI -->
+    </div><!-- !Settings UI -->
 
     <!-- Gameover Popup -->
     <div class="popup" id="js-gameover">

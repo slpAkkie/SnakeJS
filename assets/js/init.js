@@ -1,166 +1,158 @@
-'use strict';
+'use strict'
 
 
 
-/** ==================================================
- * Configuration */
+// ==================================================
+// Define constants
 
-/**
- * Game configuration (edit if you want customize game)
- *
- * @var {Object}
- */
-let config = {};
-
-
-
-/**
- * Game default configuration (Do not edit!!!)
- *
- * @var {Object}
- */
-const defaults = {
-
-  speedForce: 0.1,
-  forceInterval: 1000,
-
-  grid: {
-    size: 20,
-    width: 40,
-    height: 40,
-  },
-
-  snake: {
-    bodyColor: '#555555',
-    headColor: '#222222',
-  },
-
-  food: {
-    color: '#ae4060',
-  },
-
-};
-
-
-
-/** ==================================================
- * Define constants */
-
-// Keys
-const buttonCodes = {
-  'a': 'left',
-  'ф': 'left',
+const MovementButtonsDirection = {
+  'KeyA': 'left',
   'ArrowLeft': 'left',
 
-  'w': 'up',
-  'ц': 'up',
+  'KeyW': 'up',
   'ArrowUp': 'up',
 
-  'd': 'right',
-  'в': 'right',
+  'KeyD': 'right',
   'ArrowRight': 'right',
 
-  's': 'down',
-  'ы': 'down',
+  'KeyS': 'down',
   'ArrowDown': 'down',
-};
+}
 
-// Game UI
 const UI = {
-  score: document.querySelector( '.game-ui__value[data-name=score]' ),
-  eaten: document.querySelector( '.game-ui__value[data-name=eaten]' ),
-  duration: document.querySelector( '.game-ui__value[data-name=duration]' ),
-  speed: document.querySelector( '.game-ui__value[data-name=speed]' ),
-};
+  _score: document.querySelector( '.game-ui__value[data-name=score]' ),
+  set score( value ) { UI._score.innerText = value },
 
-const gameOverPopup = {
+  _eaten: document.querySelector( '.game-ui__value[data-name=eaten]' ),
+  set eaten( value ) { UI._eaten.innerText = value },
+
+  _duration: document.querySelector( '.game-ui__value[data-name=duration]' ),
+  set duration( value ) { UI._duration.innerText = value },
+
+  _speed: document.querySelector( '.game-ui__value[data-name=speed]' ),
+  set speed( value ) { UI._speed.innerText = value },
+}
+
+const SETTINGS_UI = {
+  themesContainer: document.querySelector( '.game-ui__options' ),
+
+  getThemePanel: ( themeName, themeObj ) => createElement( `
+    <div class="game-ui_option game-ui__color-picker" data-value="${themeName}">
+      <div class="game-ui__colors">
+        <div class="game-ui__color game-ui__color_primary" style="background-color: ${themeObj.snake.headColor}"></div>
+        <div class="game-ui__color game-ui__color_secondary" style="background-color: ${themeObj.snake.bodyColor}"></div>
+        <div class="game-ui__color game-ui__color_food" style="background-color: ${themeObj.food.color}"></div>
+        <div class="game-ui__color game-ui__color_ground" style="background-color: ${themeObj.ground.color}"></div>
+      </div>
+    </div>`),
+}
+
+const GameoverPopup = {
   container: document.querySelector( '#js-gameover' ),
-  score: document.querySelector( '#js-score' ),
-  eaten: document.querySelector( '#js-eaten' ),
-  duration: document.querySelector( '#js-duration' ),
+  restart: document.querySelector( '#js-again' ),
 
-  again: document.querySelector( '#js-again' ),
-};
+  _score: document.querySelector( '#js-score' ),
+  set score( value ) { GameoverPopup._score.innerText = value },
 
-// Canvas
-const appCanvas = document.querySelector( '#js-canvas' );
-const appContext = appCanvas.getContext( '2d' );
+  _eaten: document.querySelector( '#js-eaten' ),
+  set eaten( value ) { GameoverPopup._eaten.innerText = value },
 
-// Size of game field
-const cellSize = config?.grid?.size || defaults.grid.size;
+  _duration: document.querySelector( '#js-duration' ),
+  set duration( value ) { GameoverPopup._duration.innerText = value },
+}
 
-const gridSize = {
-  rows: config?.grid?.height || defaults.grid.height,
-  cols: config?.grid?.width || defaults.grid.width,
-};
-
-const fieldSize = {
-  width: cellSize * gridSize.cols,
-  height: cellSize * gridSize.rows,
-};
+const CANVAS_SIZE = { ...DEFAULTS.CANVAS_SIZE }
+const GRID = {
+  SIZE: DEFAULTS.GRID_SIZE,
+  WIDTH: null,
+  HEIGHT: null,
+}
+GRID.WIDTH = CANVAS_SIZE.WIDTH / GRID.SIZE
+GRID.HEIGHT = CANVAS_SIZE.HEIGHT / GRID.SIZE
 
 
 
-/** ==================================================
- * Initialize game data */
+// ==================================================
+// Initialize game data
 
-appCanvas.width = fieldSize.width;
-appCanvas.height = fieldSize.height;
+let gameData = {
+  speed: DEFAULTS.SPEED,
+  speedAcceleration: DEFAULTS.SPEED_ACCELERATION,
+  acceleration: DEFAULTS.ACCELERATION,
+  getAcceleratedSpeed: () => gameData.speed - gameData.acceleration,
+  getSpeedRatio: () => {
+    let speed = ( Math.round( gameData.speed / gameData.getAcceleratedSpeed() * 100 ) / 100 ).toString(),
+      decimalCount = speed.split( '.' )[ 1 ]?.length
 
+    if ( !decimalCount ) speed = `${speed}.000`
+    else if ( decimalCount < 3 ) speed = `${speed}00`
+    else if ( decimalCount < 2 ) speed = `${speed}0`
 
-
-// Set game objects
-const player = new Snake( config.snake, defaults.snake );
-const food = new Food( config.food, defaults.food );
-
-
-
-// In game data
-let data = {
-  isPause: false,
-  pausedAt: null,
-  started: false,
-  startedAt: null,
-
-  get duration() {
-    return data.startedAt ? Math.floor( ( Date.now() - data.startedAt ) / 100 ) / 10 : 0;
+    return speed
   },
 
-  timeoutID: null,
+  isStart: false,
+  startedAt: null,
+  isPaused: false,
+  pausedAt: null,
+  isGameover: false,
+  getGameDuration: () => gameData.startedAt ? Date.now() - gameData.startedAt : 0,
 
-  initialSpeed: 200,
-  speed: null,
+  skin: config.skin,
+  getSkin: () => SKINS[ gameData.skin ],
 
-  speedForce: config?.speedForce || defaults.speedForce,
-  forceTimeoutl: config?.forceTimeout || defaults.forceTimeout,
-  forceSpeedTimeoutID: null,
+  updateTimeoutID: null,
 
-  nextFrameDirection: null,
-  direction: null,
+  direction: DEFAULTS.DIRECTION,
+  newDirection: DEFAULTS.DIRECTION,
 
-  gameOver: false,
-};
-
-data.speed = config?.speed || data.initialSpeed;
-
-
-
-/** ==================================================
- * Set Event handlers */
-
-document.addEventListener( 'keydown', evt => data.nextFrameDirection = buttonCodes[ evt.key ] || null );
-document.addEventListener( 'keydown', evt => {
-  if ( evt.key === 'Escape' ) {
-    if ( data.isPause ) continueGame();
-    else pauseGame();
-  }
-} );
-
-gameOverPopup.again.addEventListener( 'click', playAgain );
+  updateSkin: false,
+}
 
 
 
-/** ==================================================
- * Start game cycle */
+// ==================================================
+// Initialize game objects
 
-data.timeoutID = setTimeout( update, data.speed );
+let gameObjects = []
+
+let player = new Snake( gameData.getSkin() )
+let commonFood = new Food( gameData.getSkin() )
+
+gameObjects.push( player )
+gameObjects.push( commonFood )
+
+
+
+// ==================================================
+// Initialize canvas
+
+const gameCanvas = document.querySelector( '#js-canvas' )
+gameCanvas.width = CANVAS_SIZE.WIDTH
+gameCanvas.height = CANVAS_SIZE.HEIGHT
+
+const gameContext = gameCanvas.getContext( '2d' )
+
+
+
+// ==================================================
+// Load Skins
+
+loadSkins()
+setSkin( gameData.skin )
+
+
+
+// ==================================================
+// Event handlers
+
+document.addEventListener( 'keydown', keydownHandler )
+
+GameoverPopup.restart.addEventListener( 'click', restart )
+
+
+
+// ==================================================
+// Game start
+
+gameData.updateTimeoutID = setTimeout( update, gameData.speed )

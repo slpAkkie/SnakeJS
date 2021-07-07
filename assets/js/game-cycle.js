@@ -1,110 +1,154 @@
-'use strict';
+'use strict'
 
 
+
+// ==================================================
+// Game cycle functions
 
 /**
- * Check new direction and update if it's possible
+ * Check if two directions are opposite
+ *
+ * @param {String} direction1
+ * @param {String} direction2
+ * @returns {Boolean}
+ */
+function isOppositeDirection( direction1, direction2 ) {
+  return direction1 === 'left' && direction2 === 'right'
+    || direction1 === 'right' && direction2 === 'left'
+    || direction1 === 'up' && direction2 === 'down'
+    || direction1 === 'down' && direction2 === 'up'
+}
+
+/**
+ * Update direction if it's possible
  *
  * @returns {void}
  */
 function updateDirection() {
-  if ( data.gameOver ) return;
-
-  if ( data.nextFrameDirection === 'left' && data.direction !== 'right' || data.nextFrameDirection === 'right' && data.direction !== 'left' || data.nextFrameDirection === 'up' && data.direction !== 'down' || data.nextFrameDirection === 'down' && data.direction !== 'up' ) {
-    if ( !data.direction ) {
-      data.started = true;
-      data.startedAt = Date.now();
+  if ( gameData.direction !== gameData.newDirection && !isOppositeDirection( gameData.newDirection, gameData.direction ) ) {
+    if ( !gameData.isStart ) {
+      gameData.isStart = true
+      gameData.startedAt = Date.now()
     }
-    data.direction = data.nextFrameDirection;
-    data.nextFrameDirection = null;
+
+    gameData.direction = gameData.newDirection
   }
 }
 
-
-
 /**
- * Game over
+ * Handle the gameover
  *
  * @returns {void}
  */
-function gameOver() {
-  gameOverPopup.container.classList.add( 'popup_shown' );
-  gameOverPopup.score.innerText = Math.floor( ( player.eaten / data.speed * 150 ) * 1000 ) / 1000;
-  gameOverPopup.eaten.innerText = player.eaten;
-  gameOverPopup.duration.innerText = `${data.duration} секунд`;
+function gameover() {
+  GameoverPopup.container.classList.add( 'popup_shown' )
+
+  GameoverPopup.score = calculateScore( player.eaten, gameData.speed )
+  GameoverPopup.eaten = player.eaten
+  GameoverPopup.duration = timeFormat( gameData.getGameDuration() )
+
+  gameData.acceleration = DEFAULTS.ACCELERATION
+
+  gameData.isGameover = true
+  gameData.isStart = false
+  gameData.startedAt = null
+  gameData.isPaused = false
+  gameData.pausedAt = null
+
+  gameData.direction = DEFAULTS.DIRECTION
+  gameData.newDirection = DEFAULTS.DIRECTION
 }
 
-
-
 /**
- * Start game again
+ * Restarts game
  *
  * @returns {void}
  */
-function playAgain() {
-  gameOverPopup.container.classList.remove( 'popup_shown' );
+function restart() {
+  GameoverPopup.container.classList.remove( 'popup_shown' )
 
-  clearTimeout( data.forceSpeedTimeoutID );
+  gameData.isGameover = false
 
-  data.gameOver = false;
-
-  data.direction = null;
-  data.started = false;
-  data.speed = data.initialSpeed;
-  data.startedAt = null;
-
-  player.resetState();
-  food.calculateNewCoords();
-
-  data.timeoutID = setTimeout( update, data.speed );
+  gameObjects.forEach( gObj => gObj.resetState() )
+  updateUI()
 }
-
-
 
 /**
  * Pause the game
+ *
+ * @returns {void}
  */
 function pauseGame() {
-  data.isPause = true;
-  data.pausedAt = Date.now();
+  gameData.isPaused = true
+  gameData.pausedAt = Date.now()
 }
 
 /**
+ * Continue the game after it has been paused
  *
+ * @returns {void}
  */
 function continueGame() {
-  data.startedAt += Date.now() - data.pausedAt;
-  data.isPause = false;
-  data.pausedAt = null;
+  gameData.startedAt += Date.now() - gameData.pausedAt
+
+  gameData.isPaused = false
+  gameData.pausedAt = null
 }
 
+/**
+ * Accelerate game speed
+ *
+ * @returns {void}
+ */
+function accelerateSpeed() {
+  let newAcceleration = gameData.acceleration + gameData.speedAcceleration
 
+  gameData.acceleration = gameData.speed - newAcceleration < 50 ? gameData.speed - 50 : newAcceleration
+}
 
 /**
- * Update frame
+ * Update UI information
+ *
+ * @returns {void}
+ */
+function updateUI() {
+  UI.score = calculateScore( player.eaten, gameData.speed )
+  UI.eaten = player.eaten
+  UI.duration = timeFormat( gameData.getGameDuration() )
+  UI.speed = gameData.getSpeedRatio()
+}
+
+/**
+ * Update game state
  *
  * @returns {void}
  */
 function update() {
-  if ( !data.isPause ) {
-    updateDirection();
+  if ( !gameData.isGameover ) {
+    updateDirection()
 
-    appContext.fillStyle = '#20da80';
-    appContext.fillRect( 0, 0, appCanvas.width, appCanvas.height )
+    if ( !gameData.isPaused ) {
+      gameObjects.forEach( gObj => gObj.update( gameData ) )
 
-    // Update and render Game objects
-    player.update( data ).render( appContext );
-    food.update( data ).render( appContext );
+      if ( gameData.updateSkin ) {
+        gameObjects.forEach( gObj => gObj.setSkin( gameData.getSkin() ) )
+        gameData.updateSkin = false
+      }
 
-    // Update UI
-    UI.score.innerText = Math.floor( ( player.eaten / data.speed * 150 ) * 1000 ) / 1000;
-    UI.eaten.innerText = player.eaten;
-    UI.duration.innerText = data.duration;
-    UI.speed.innerText = Math.floor( data.initialSpeed / data.speed * 1000 ) / 1000;
-
-    if ( data.started && data.speedForce ) data.forceSpeedTimeoutID = setTimeout( () => { data.speed = data.speed <= 50 ? data.speed : data.speed - data.speedForce }, data.forceTimeout );
+      gameData.isStart && updateUI()
+    }
   }
 
-  if ( !data.gameOver ) data.timeoutID = setTimeout( update, data.speed );
-  else gameOver();
+  render()
+  gameData.updateTimeoutID = setTimeout( update, gameData.speed - gameData.acceleration )
+}
+
+/**
+ * Render all gameObjects
+ */
+function render() {
+  gameContext.fillStyle = gameData.getSkin().ground.color
+  gameContext.fillRect( 0, 0, gameCanvas.width, gameCanvas.height )
+
+  gameObjects.forEach( gObj => gObj.render( gameContext ) )
 }

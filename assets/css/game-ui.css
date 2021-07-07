@@ -5,11 +5,11 @@
     width: 15rem;
 }
 
-.game-ui_left {
+.game-ui_info {
     left: 2.5rem;
 }
 
-.game-ui_right {
+.game-ui_settings {
     right: 2.5rem;
 }
 
@@ -21,13 +21,8 @@
     margin-bottom: .5rem;
 }
 
-.game-ui__control {
-    margin-bottom: .5rem;
-}
-
-.game-ui__color {
-    width : 30%;
-    height: 2rem;
+.game-ui_option {
+    margin: 1.5rem 0;
 }
 
 .game-ui__colors {
@@ -35,31 +30,10 @@
     justify-content: space-between;
     align-items    : center;
 
-    padding: 1rem;
-
     cursor: pointer;
 }
 
-.game-ui__color_gray-primary {
-    background-color: #555555;
-}
-
-.game-ui__color_gray-secondary {
-    background-color: #222222;
-}
-
-.game-ui__color_gray-food {
-    background-color: #ae4060;
-}
-
-.game-ui__color_blue-primary {
-    background-color: #223382;
-}
-
-.game-ui__color_blue-secondary {
-    background-color: #5566f5;
-}
-
-.game-ui__color_blue-food {
-    background-color: #195bff;
+.game-ui__color {
+    width : 30%;
+    height: 4rem;
 }
