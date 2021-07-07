@@ -112,6 +112,14 @@ let gameData = {
 
 
 // ==================================================
+// Load Skins
+
+loadSkins()
+setSkin( gameData.skin, false )
+
+
+
+// ==================================================
 // Initialize game objects
 
 let gameObjects = []
@@ -132,14 +140,6 @@ gameCanvas.width = CANVAS_SIZE.WIDTH
 gameCanvas.height = CANVAS_SIZE.HEIGHT
 
 const gameContext = gameCanvas.getContext( '2d' )
-
-
-
-// ==================================================
-// Load Skins
-
-loadSkins()
-setSkin( gameData.skin )
 
 
 

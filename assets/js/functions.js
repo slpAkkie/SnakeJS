@@ -117,11 +117,11 @@ function createElement( markup ) {
  *
  * @param {String} skinName
  */
-function setSkin( skinName ) {
+function setSkin( skinName, rewriteOldSkin = true ) {
   gameData.skin = skinName = SKINS[ skinName ] ? skinName : DEFAULTS.SKIN
   let skin = SKINS[ skinName ]
 
-  gameData.updateSkin = true
+  gameData.updateSkin = rewriteOldSkin
 
   GameoverPopup.container.style.backgroundColor = `${skin.snake.headColor}bf`;
 }
