@@ -37,10 +37,21 @@ class Snake {
    */
   #startLength = 0;
 
+  /**
+   * How much snake ate
+   */
+  eaten = 0;
 
 
+
+  /**
+   * @var {Number}
+   */
   get length() { return this.#body.length }
 
+  /**
+   * @var {Number}
+   */
   get lastBodyIndex() { return this.length - 1 }
 
 
@@ -50,11 +61,11 @@ class Snake {
    *
    * @param {Object} param0
    */
-  constructor( { snake, grid }, defaults ) {
-    this.#bodyColor = snake?.bodyColor || defaults.snake.bodyColor;
-    this.#headColor = snake?.headColor || defaults.snake.headColor;
+  constructor( snake, defaults ) {
+    this.#bodyColor = snake?.bodyColor || defaults.bodyColor;
+    this.#headColor = snake?.headColor || defaults.headColor;
 
-    this.#bodySize = grid?.size || defaults.grid.size;
+    this.#bodySize = cellSize;
 
     this.#body.push( {
       x: fieldSize.width / 2,
@@ -62,13 +73,84 @@ class Snake {
     } );
   }
 
-  firstGrowth() {
+  /**
+   * Change the snake's skin
+   *
+   * @param {Object} skin
+   *
+   * @returns {void}
+   */
+  changeSkin( skin ) {
+    this.#bodyColor = skin?.bodyColor || defaults.bodyColor;
+    this.#headColor = skin?.headColor || defaults.headColor;
+  }
+
+  /**
+   * Check if coords into snake's body
+   *
+   * @param {Object} coords1
+   * @param {Object} coords2
+   *
+   * @returns {Boolean}
+   */
+  checkCollisionWithCoords( coords1, coords2 ) {
+    return coords1.x === coords2.x && coords1.y === coords2.y;
+  }
+
+  /**
+   * Check if coords is in snake body
+   *
+   * @param {Object} gameObject
+   *
+   * @returns {Boolean}
+   */
+  checkCollisionWith( gameObject ) {
+    return this.#body.some( bodyPart => this.checkCollisionWithCoords( bodyPart, gameObject.coords ) );
+  }
+
+  /**
+   * Check if snake ate yourself
+   *
+   * @returns {Boolean}
+   */
+  checkAteYourself() {
+    for ( let i = 4; i < this.length; i++ )
+      if ( this.checkCollisionWithCoords( this.#body[ 0 ], this.#body[ i ] ) ) return true;
+
+    return false;
+  }
+
+  /**
+   * Reset snake to the initial state
+   *
+   * @returns {void}
+   */
+  resetState() {
+    this.#body = [ {
+      x: fieldSize.width / 2,
+      y: fieldSize.height / 2,
+    } ];
+
+    this.#startLength = 0;
+
+    this.eaten = 0;
+  }
+
+  /**
+   * Eat the food and grow
+   *
+   * @returns {void}
+   */
+  eat() {
+    this.#body.push( this.#body[ this.lastBodyIndex ] );
+    this.eaten++;
+    food.calculateNewCoords();
   }
 
   /**
    * Update snake state
    *
-   * @param {Array} data In game project
+   * @param {Array} data In game data
    *
    * @returns {void}
    */
@@ -91,9 +173,12 @@ class Snake {
 
     // Add new part to the front and pop the last one
     this.#body.unshift( newHeadCoords );
+    if ( this.checkCollisionWith( food ) ) this.eat();
 
     if ( this.#startLength < this.#startWithLength ) this.#startLength++;
     else this.#body.pop();
+
+    if ( this.checkAteYourself() ) data.gameOver = true;
 
     return this;
   }

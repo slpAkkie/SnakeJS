@@ -10,7 +10,7 @@
  *
  * @var {Object}
  */
-const config = {};
+let config = {};
 
 
 
@@ -21,7 +21,8 @@ const config = {};
  */
 const defaults = {
 
-  speed: 200,
+  speedForce: 0.1,
+  forceInterval: 1000,
 
   grid: {
     size: 20,
@@ -32,6 +33,10 @@ const defaults = {
   snake: {
     bodyColor: '#555555',
     headColor: '#222222',
+  },
+
+  food: {
+    color: '#ae4060',
   },
 
 };
@@ -60,15 +65,39 @@ const buttonCodes = {
   'ArrowDown': 'down',
 };
 
+// Game UI
+const UI = {
+  score: document.querySelector( '.game-ui__value[data-name=score]' ),
+  eaten: document.querySelector( '.game-ui__value[data-name=eaten]' ),
+  duration: document.querySelector( '.game-ui__value[data-name=duration]' ),
+  speed: document.querySelector( '.game-ui__value[data-name=speed]' ),
+};
+
+const gameOverPopup = {
+  container: document.querySelector( '#js-gameover' ),
+  score: document.querySelector( '#js-score' ),
+  eaten: document.querySelector( '#js-eaten' ),
+  duration: document.querySelector( '#js-duration' ),
+
+  again: document.querySelector( '#js-again' ),
+};
+
 // Canvas
 const appCanvas = document.querySelector( '#js-canvas' );
 const appContext = appCanvas.getContext( '2d' );
 
 // Size of game field
+const cellSize = config?.grid?.size || defaults.grid.size;
+
+const gridSize = {
+  rows: config?.grid?.height || defaults.grid.height,
+  cols: config?.grid?.width || defaults.grid.width,
+};
+
 const fieldSize = {
-  width: ( config?.grid?.size || defaults.grid.size ) * ( config?.grid?.width || defaults.grid.width ),
-  height: ( config?.grid?.size || defaults.grid.size ) * ( config?.grid?.height || defaults.grid.height ),
-}
+  width: cellSize * gridSize.cols,
+  height: cellSize * gridSize.rows,
+};
 
 
 
@@ -81,19 +110,38 @@ appCanvas.height = fieldSize.height;
 
 
 // Set game objects
-let Player = new Snake( config, defaults );
+const player = new Snake( config.snake, defaults.snake );
+const food = new Food( config.food, defaults.food );
 
 
 
 // In game data
 let data = {
+  isPause: false,
+  pausedAt: null,
+  started: false,
+  startedAt: null,
+
+  get duration() {
+    return data.startedAt ? Math.floor( ( Date.now() - data.startedAt ) / 100 ) / 10 : 0;
+  },
+
+  timeoutID: null,
+
+  initialSpeed: 200,
+  speed: null,
+
+  speedForce: config?.speedForce || defaults.speedForce,
+  forceTimeoutl: config?.forceTimeout || defaults.forceTimeout,
+  forceSpeedTimeoutID: null,
+
   nextFrameDirection: null,
   direction: null,
-  speed: config?.speed || defaults.speed,
+
+  gameOver: false,
 };
 
-// Game timeout
-let timeoutID = null;
+data.speed = config?.speed || data.initialSpeed;
 
 
 
@@ -101,3 +149,18 @@ let timeoutID = null;
  * Set Event handlers */
 
 document.addEventListener( 'keydown', evt => data.nextFrameDirection = buttonCodes[ evt.key ] || null );
+document.addEventListener( 'keydown', evt => {
+  if ( evt.key === 'Escape' ) {
+    if ( data.isPause ) continueGame();
+    else pauseGame();
+  }
+} );
+
+gameOverPopup.again.addEventListener( 'click', playAgain );
+
+
+
+/** ==================================================
+ * Start game cycle */
+
+data.timeoutID = setTimeout( update, data.speed );
