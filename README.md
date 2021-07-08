@@ -1,4 +1,4 @@
-# [Snake JS](https://slpakkie.github.io/snake-js/index.html)
+# [Snake JS](https://slpakkie.github.io/snake-js/snake-js.html)
 
 Классическая игра в змейку с небольшими добавками
 
