@@ -25,14 +25,12 @@ function isOppositeDirection( direction1, direction2 ) {
  * @returns {void}
  */
 function updateDirection() {
-  if ( gameData.direction !== gameData.newDirection && !isOppositeDirection( gameData.newDirection, gameData.direction ) ) {
-    if ( !gameData.isStart ) {
-      gameData.isStart = true
-      gameData.startedAt = Date.now()
-    }
-
-    gameData.direction = gameData.newDirection
+  if ( !gameData.isStart ) {
+    gameData.isStart = true
+    gameData.startedAt = Date.now()
   }
+
+  gameData.direction = gameData.newDirection
 }
 
 /**
@@ -112,7 +110,7 @@ function accelerateSpeed() {
  * @returns {void}
  */
 function updateUI() {
-  UI.score = calculateScore( player.eaten, gameData.speed )
+  UI.score = calculateScore()
   UI.eaten = player.eaten
   UI.duration = timeFormat( gameData.getGameDuration() )
   UI.speed = gameData.getSpeedRatio()
