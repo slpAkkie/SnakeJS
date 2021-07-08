@@ -46,8 +46,8 @@ function getDirectionByCode( code ) { return MovementButtonsDirection[ code ] ||
  * @param {Event} evt
  */
 function keydownHandler( evt ) {
-  if ( gameData.isStart && evt.key === 'Escape' ) gameData.isPaused ? continueGame() : pauseGame()
-  else if ( !gameData.isPaused ) {
+  if ( evt.key === 'Escape' ) gameData.isPaused ? continueGame() : pauseGame()
+  else if ( !gameData.isGameover && !gameData.isPaused ) {
     let pressedDirection = getDirectionByCode( evt.code )
     gameData.newDirection = pressedDirection && !isOppositeDirection( pressedDirection, gameData.direction ) && pressedDirection !== gameData.direction ? pressedDirection : gameData.newDirection
   }
