@@ -25,7 +25,7 @@ function isOppositeDirection( direction1, direction2 ) {
  * @returns {void}
  */
 function updateDirection() {
-  if ( !gameData.isStart ) {
+  if ( gameData.direction !== 'idle' && !gameData.isStart ) {
     gameData.isStart = true
     gameData.startedAt = Date.now()
   }
