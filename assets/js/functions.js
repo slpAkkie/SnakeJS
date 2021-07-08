@@ -49,7 +49,7 @@ function keydownHandler( evt ) {
   if ( gameData.isStart && evt.key === 'Escape' ) gameData.isPaused ? continueGame() : pauseGame()
   else if ( !gameData.isPaused ) {
     let pressedDirection = getDirectionByCode( evt.code )
-    gameData.newDirection = !isOppositeDirection( pressedDirection, gameData.direction ) && pressedDirection !== gameData.direction ? pressedDirection : gameData.newDirection
+    gameData.newDirection = pressedDirection && !isOppositeDirection( pressedDirection, gameData.direction ) && pressedDirection !== gameData.direction ? pressedDirection : gameData.newDirection
   }
 }
 
