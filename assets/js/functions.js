@@ -50,7 +50,7 @@ function keydownHandler( evt ) {
   else if ( !gameData.isGameover && !gameData.isPaused ) {
     let pressedDirection = getDirectionByCode( evt.code )
     gameData.newDirection = pressedDirection && !isOppositeDirection( pressedDirection, gameData.direction ) && pressedDirection !== gameData.direction ? pressedDirection : gameData.newDirection
-  }
+  } else if ( gameData.isGameover && ( evt.code === 'Space' || evt.code === 'Enter' ) ) GameoverPopup.restart.click()
 }
 
 /**
