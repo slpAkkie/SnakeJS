@@ -46,7 +46,7 @@ function getDirectionByCode( code ) { return MovementButtonsDirection[ code ] ||
  * @param {Event} evt
  */
 function keydownHandler( evt ) {
-  if ( evt.key === 'Escape' ) gameData.isPaused ? continueGame() : pauseGame()
+  if ( gameData.isStart && evt.key === 'Escape' ) gameData.isPaused ? continueGame() : pauseGame()
   else if ( !gameData.isGameover && !gameData.isPaused ) {
     let pressedDirection = getDirectionByCode( evt.code )
     gameData.newDirection = pressedDirection && !isOppositeDirection( pressedDirection, gameData.direction ) && pressedDirection !== gameData.direction ? pressedDirection : gameData.newDirection
@@ -121,7 +121,7 @@ function setSkin( skinName, rewriteOldSkin = true ) {
 
   gameData.updateSkin = rewriteOldSkin
 
-  GameoverPopup.container.style.backgroundColor = `${skin.snake.headColor}bf`;
+  document.querySelector( '#js-style' ).innerText = `.popup { background-color: ${skin.snake.headColor}bf }`
 }
 
 /**

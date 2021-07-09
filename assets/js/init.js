@@ -61,6 +61,10 @@ const GameoverPopup = {
   set duration( value ) { GameoverPopup._duration.innerText = value },
 }
 
+const PausePopup = {
+  container: document.querySelector( '#js-pause' )
+}
+
 const CANVAS_SIZE = { ...DEFAULTS.CANVAS_SIZE }
 const GRID = {
   SIZE: DEFAULTS.GRID_SIZE,

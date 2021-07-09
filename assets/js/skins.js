@@ -31,7 +31,7 @@ const SKINS = {
     },
   },
 
-  'palenight': {
+  'palenight-reverse': {
     snake: {
       headColor: '#21094E',
       bodyColor: '#511281',
@@ -45,7 +45,7 @@ const SKINS = {
     },
   },
 
-  'palenight-reverse': {
+  'palenight': {
     snake: {
       headColor: '#4CA1A3',
       bodyColor: '#511281',

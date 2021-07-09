@@ -29,6 +29,9 @@
 
 <body>
 
+  <!-- JS Injected styles -->
+  <style id="js-style"></style>
+
   <!-- Game area -->
   <div class="game-area">
     <canvas id="js-canvas"></canvas>
@@ -81,6 +84,19 @@
         </div>
       </div>
     </div> <!-- !Gameover Popup -->
+
+    <!-- Pause Popup -->
+    <div class="popup" id="js-pause">
+      <div class="popup__inner">
+        <div class="popup__header">
+          <h1 class="popup__title">Пауза</h1>
+        </div>
+
+        <div class="popup__body">
+          <p class="popup__text">Игра на паузе, чтобы продолжить нажмите Escape</p>
+        </div>
+      </div>
+    </div><!-- !Pause Popup -->
 
   </div>
 

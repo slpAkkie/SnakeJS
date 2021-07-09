@@ -3,5 +3,5 @@
 
 
 let config = {
-  skin: 'black-gold'
+  skin: 'palenight'
 }

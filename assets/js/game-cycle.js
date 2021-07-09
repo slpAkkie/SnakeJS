@@ -79,6 +79,8 @@ function restart() {
 function pauseGame() {
   gameData.isPaused = true
   gameData.pausedAt = Date.now()
+
+  PausePopup.container.classList.add( 'popup_shown' )
 }
 
 /**
@@ -91,6 +93,8 @@ function continueGame() {
 
   gameData.isPaused = false
   gameData.pausedAt = null
+
+  PausePopup.container.classList.remove( 'popup_shown' )
 }
 
 /**
