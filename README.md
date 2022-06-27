@@ -1,15 +1,11 @@
 # [Snake JS](https://slpakkie.github.io/snake-js/index.html)
 
-Классическая игра в змейку с небольшими добавками
+Classic snake game created in Javascript with my additions
 
-## Описание
-
-Моя вторая игра на канвасе
-
-## Автор
+## Author
 
 Alexandr Shamanin (@slpakkie)
 
-## Версия
+## Version
 
 1.2.0
