@@ -15,7 +15,7 @@ const DEFAULTS = {
 
   GRID_SIZE: 20,
 
-  SKIN: 'default',
+  SKIN: 'black-gold',
 
   DIRECTION: 'idle',
 }

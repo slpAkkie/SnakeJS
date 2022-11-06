@@ -1,12 +1,14 @@
 .popup {
     position: absolute;
-    top     : 0;
-    left    : 0;
-    right   : 0;
-    bottom  : 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-    display      : none;
+    display: none;
     place-content: center;
+
+    background-color: #00000075;
 }
 
 .popup.popup_shown {
@@ -17,17 +19,17 @@
     content: '';
 
     position: absolute;
-    top     : 0;
-    left    : 0;
-    right   : 0;
-    bottom  : 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .popup__inner {
     padding: 3rem 4.5rem;
 
-    background-color: #fff;
-    border-radius   : .4rem;
+    background-color: var(--body-bg);
+    border-radius: 0.4rem;
 
     z-index: 1;
 }

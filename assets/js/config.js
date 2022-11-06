@@ -3,5 +3,5 @@
 
 
 let config = {
-  skin: 'palenight'
+  skin: DEFAULTS.SKIN
 }

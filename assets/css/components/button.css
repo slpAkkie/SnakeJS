@@ -3,15 +3,15 @@
 
     padding: 1rem 2.5rem;
 
-    color      : #000;
-    font-size  : 1.3rem;
+    color: #000;
+    font-size: 1.3rem;
     font-weight: 700;
 
     background-color: rgb(126, 231, 135);
-    border-radius   : .4rem;
+    border-radius: 0.4rem;
 
-    cursor    : pointer;
-    transition: background-color .15s ease;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
 }
 
 .button:hover {

@@ -3,20 +3,6 @@
 
 
 const SKINS = {
-  'default': {
-    snake: {
-      headColor: '#333333',
-      bodyColor: '#555555',
-    },
-
-    food: {
-      color: '#D83A56',
-    },
-    ground: {
-      color: '#66DE93',
-    },
-  },
-
   'black-gold': {
     snake: {
       headColor: '#FF8303',
@@ -28,6 +14,20 @@ const SKINS = {
     },
     ground: {
       color: '#333333',
+    },
+  },
+
+  'palenight': {
+    snake: {
+      headColor: '#4CA1A3',
+      bodyColor: '#511281',
+    },
+
+    food: {
+      color: '#A5E1AD',
+    },
+    ground: {
+      color: '#21094E',
     },
   },
 
@@ -45,17 +45,17 @@ const SKINS = {
     },
   },
 
-  'palenight': {
+  'apple': {
     snake: {
-      headColor: '#4CA1A3',
-      bodyColor: '#511281',
+      headColor: '#333333',
+      bodyColor: '#555555',
     },
 
     food: {
-      color: '#A5E1AD',
+      color: '#D83A56',
     },
     ground: {
-      color: '#21094E',
+      color: '#66DE93',
     },
   },
 }

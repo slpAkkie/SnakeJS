@@ -120,8 +120,6 @@ function setSkin( skinName, rewriteOldSkin = true ) {
   let skin = SKINS[ skinName ]
 
   gameData.updateSkin = rewriteOldSkin
-
-  document.querySelector( '#js-style' ).innerText = `.popup { background-color: ${skin.snake.headColor}bf }`
 }
 
 /**
