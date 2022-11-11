@@ -1,4 +1,4 @@
-# [Snake JS](https://slpakkie.github.io/snake-js/index.html)
+## Snake JS
 
 Classic snake game created in Javascript with my additions
 
