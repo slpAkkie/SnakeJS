@@ -1,11 +1,11 @@
-## Snake JS
+# Snake JS
 
-Classic snake game created in Javascript with my additions
+Классическая игра - змейка, написанная на `JavaScript`
 
-## Author
+## Автор
 
 Alexandr Shamanin (@slpakkie)
 
-## Version
+## Версия
 
 1.2.1
